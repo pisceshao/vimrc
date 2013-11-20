@@ -3,10 +3,9 @@ set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
 "winpos 5 5          	    " 设定窗口位置  
 "set lines=40 columns=155   " 设定窗口大小  
 set nocompatible            " 关闭 vi 兼容模式
-set smartindent                 " C/C++风格缩进
-set smarttab
-set clipboard+=unnamed      " 代码补全 
-set autowrite		    " 自动保存
+set si
+set clipboard+=unnamed      " 共享剪切板
+set autowrite		        " 自动保存
 set nobackup                " 关闭备份
 set noswapfile      	    " 不使用swp文件，注意，错误退出后无法恢复
 set number                  " 显示行号
@@ -16,7 +15,7 @@ set ruler                   " 打开状态栏标尺
 set shiftwidth=8            " 设定 > 命令移动时的宽度为 8
 set softtabstop=8           " 使得按退格键时可以一次删掉 8 个空格
 set tabstop=8               " 设定 tab 长度为 8
-set expandtab		    " 不要用空格代替制表符
+set noexpandtab		        " 用空格代替制表符
 set autochdir               " 自动切换当前目录为当前文件所在的目录
 set completeopt=longest,menu "文件检测
 set ignorecase smartcase    " 搜索时忽略大小写，但在有一个或以上大写字母时仍保持对大小写敏感
@@ -25,6 +24,39 @@ set incsearch               " 输入搜索内容时就显示搜索结果
 "set hlsearch                " 搜索时高亮显示被找到的文本
 set cmdheight=1             " 设定命令行的行数为 1
 set laststatus=2            " 显示状态栏 (默认值为 1, 无法显示状态栏)
+
+"C，C++ 按F9编译运行
+map <F9> :call CompileRunGcc()<CR>
+func! CompileRunGcc()
+    exec "w"
+    if &filetype == 'c'
+        exec "!gcc % -o %<"
+        exec "! ./%<"
+    elseif &filetype == 'cpp'
+        exec "!g++ % -o %<"
+        exec "! ./%<"
+    elseif &filetype == 'java' 
+        exec "!javac %" 
+        exec "!java %<"
+    elseif &filetype == 'sh'
+        :!./%
+    endif
+endfunc
+"C,C++的调试
+map <F10> :call Rungdb()<CR>
+func! Rungdb()
+    exec "w"
+    if &filetype == 'c'
+    	exec "!gcc % -g -o %<"
+    	exec "!gdb ./%<"
+    elseif &filetype == 'cpp'
+     	exec "!g++ % -g -o %<"
+        exec "!gdb ./%<"
+    endif
+endfunc
+
+" quickfix模式
+autocmd FileType c,cpp map <buffer> <leader><space> :w<cr>:make<cr>
 
 "##############键位设置###############" 
 imap jj <Esc>
@@ -51,12 +83,13 @@ Bundle 'gmarik/vundle'
 "vim plugin bundle control, command model
 " :BundleInstall install
 " :BundleInstall! update
+" :BundleSearch   search
 " :BundleClean remove plugin not in list
 
 "################### 导航 ###################"
 "目录导航
 Bundle 'scrooloose/nerdtree'
-map <leader>n :NERDTreeToggle<CR>
+map <silent> <F2> :NERDTreeToggle<CR>
 let NERDTreeHighlightCursorline=1
 let NERDTreeIgnore=[ '\.pyc$', '\.pyo$', '\.obj$', '\.o$', '\.so$','\.egg$', '^\.git$', '^\.svn$', '^\.hg$' ]
 let g:netrw_home='~/bak'
@@ -67,7 +100,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") &&b:NERDTreeT
 Bundle 'vim-scripts/taglist.vim'
 set tags=tags;
 let Tlist_Ctags_Cmd="/usr/bin/ctags"
-nnoremap <silent> <F8> :TlistToggle<CR>
+nnoremap <silent> <F3> :TlistToggle<CR>
 let Tlist_Auto_Highlight_Tag = 1
 let Tlist_Auto_Open = 0
 let Tlist_Auto_Update = 1
@@ -97,8 +130,6 @@ let Tlist_WinWidth = 25
 Bundle 'Lokaltog/vim-powerline'
 "if want to use fancy,need to add font patch -> git clone
 "git://gist.github.com/1630581.git ~/.fonts/ttf-dejavu-powerline
-""let g:Powerline_symbols = 'fancy'
-let g:Powerline_symbols = 'unicode'
 
 "主题 solarized
 Bundle 'altercation/vim-colors-solarized'
