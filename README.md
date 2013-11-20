@@ -14,7 +14,7 @@ VIM程序相关文件，包括配置、色彩、插件等。记录开始于2009-
 
 
     cd ~
-    git clone http://github.com/iissnan/dotvim.git .vim
+    git clone http://github.com/pisceshao/vimrc.git .vim
     
     
 2.获取[Vundle](https://github.com/gmarik/vundle):
@@ -51,7 +51,7 @@ VIM程序相关文件，包括配置、色彩、插件等。记录开始于2009-
 
     
     cd $HOME
-    git clone http://github.com/IIssNan/dotvim.git vimfiles
+    git clone http://github.com/pisceshao/vimrc.git vimfiles
     
     
 3.获取[Vundle](https://github.com/gmarik/vundle):
